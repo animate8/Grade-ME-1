@@ -1,0 +1,74 @@
+SAMPLE SQL QUERIES:
+
+1) List all questions for topic "Database Fundamentals" with difficulty level 5;
+
+SQL>   SELECT DISTINCT qid,question from question,topic where question.topicid = (SELECT tid from topic where tname = 'Database Fundamentals') AND qlevel = 5;
+
+2) Add a question for topic "Security and Authorization"; (login as "Kogan")
+
+Login as "kogan" is a part which is handled by the front-end java program.The SQL Query for adding a question "abc?" for topic "Security and Authorization" is as follows:
+
+FRONT END OUTPUT:
+Connecting to database...
+JDBC connected successfully
+ 
+1 Login
+2 Create User
+3 Exit
+Enter your choice: 1
+ 
+Enter your username: kogan
+Enter password: qwerty
+Extracting username and pwd...
+ 
+Welcome, Lecturer!
+1 Select Course
+2 Add Course
+3 Back
+Enter your choice: 
+
+//SQL QUERY
+
+SQL> INSERT INTO question(qid,topicid,question,qlevel) VALUES ('q21',(SELECT tid from topic where tname = 'Security and Authorization'),'abc?','5');
+
+Note: When running through the front-end, "qid" is assigned by a code running in our program and need not be entered by the faculty.
+
+3)Show me my first attempt of HW1 for csc440 spring 2013. (login as "Rjoseph")
+
+
+SQL> Select q_id,question,answer,score,right_answer from question,storage where storage.q_id = question.qid AND stud_id = 'Rjoseph' AND ex_id = 'e1' AND attempt_no = 1;
+ SAMPLE OUTPUT:
+q_id question	answer	  score	 right_answer
+q1	 abc	    jkl	     	0	  def
+q3	 def		ghi			0	  pqr
+q5	 jkl		mno			0	  def
+q8	 stu		vwx			3	  vwx
+q10	 yz			mno			0	  pqr
+
+
+4)Add a question for topic "Database Fundamentals" (Login as "Agholak"). This operation should fail.
+
+Answer) The mechanism for login is handled by the front-end. "Agholak" is not a registered faculty and hence, an authentication error occurs as follows:
+
+
+OUTPUT:
+//Program started:
+
+
+Connecting to database...
+JDBC connected successfully
+ 
+1 Login
+2 Create User
+3 Exit
+Enter your choice: 1
+ 
+Enter your username: Agholak
+Enter password: qwerty
+Extracting username and pwd...
+Invalid Username / password. Try again.
+
+
+
+
+

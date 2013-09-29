@@ -1,0 +1,258 @@
+CREATE TABLE STATEMENTS:
+THE ENVIRONMENT USED FOR DATABASE MANAGEMENT IS ORACLE MYSQL 5.2.46
+
+
+
+1)Table name: "student"  ----This table stores all the students alongwith their id's,names and respective passwords.
+
+
+
+
+
+CREATE TABLE `student` (
+  `sid` varchar(255) NOT NULL,
+  `spassword` varchar(255) NOT NULL,
+  `sname` varchar(255) NOT NULL,
+  PRIMARY KEY (`sid`),
+  UNIQUE KEY `sid_UNIQUE` (`sid`)
+) 
+
+2) Table name: "faculty" --- This table stores all the faculty with their id's,names and respective passwords
+
+
+
+CREATE TABLE `faculty` (
+  `fid` varchar(255) NOT NULL,
+  `fpassword` varchar(255) NOT NULL,
+  `fname` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`fid`)
+) 
+
+3) Table name: "storage" --- This table stores the attempts of each student for each question,the answer that the student gave a,score for that question and also the correct answer to the question.
+
+
+
+CREATE TABLE `storage` (
+  `stud_id` varchar(255) NOT NULL,
+  `ex_id` varchar(255) NOT NULL,
+  `attempt_no` varchar(255) NOT NULL DEFAULT '1',
+  `q_id` varchar(255) NOT NULL,
+  `answer` varchar(255) DEFAULT NULL,
+  `score` double DEFAULT '0',
+  `right_answer` varchar(255) DEFAULT NULL,
+  KEY `stud_id_idx` (`stud_id`),
+  KEY `ex_id_idx` (`ex_id`),
+  KEY `q_id_idx` (`q_id`),
+  KEY `answer_idx` (`answer`),
+  KEY `right_ansid_idx` (`right_answer`),
+  CONSTRAINT `ex_id` FOREIGN KEY (`ex_id`) REFERENCES `exercise` (`eid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `q_id` FOREIGN KEY (`q_id`) REFERENCES `question` (`qid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `stud_id` FOREIGN KEY (`stud_id`) REFERENCES `student` (`sid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+)
+
+
+4) Table name: "course" --- This table stores the list of courses,their token numbers,start and end dates,faculty id's and the TA information.
+
+
+
+CREATE TABLE `course` (
+  `cid` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `cname` varchar(255) DEFAULT NULL,
+  `cstart` date DEFAULT NULL,
+  `cend` date DEFAULT NULL,
+  `fid` varchar(255) DEFAULT NULL,
+  `taname` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`cid`),
+  UNIQUE KEY `token_UNIQUE` (`token`),
+  KEY `f_id_idx` (`fid`),
+  CONSTRAINT `fid` FOREIGN KEY (`fid`) REFERENCES `faculty` (`fid`) ON DELETE SET NULL ON UPDATE NO ACTION
+) 
+
+
+5) Table name: "enroll" --- Enroll captures the student and course relationship.
+
+
+
+CREATE TABLE `enroll` (
+  `s_id` varchar(255) NOT NULL,
+  `c_id` varchar(255) NOT NULL,
+  KEY `s_id_idx` (`s_id`),
+  KEY `c_id_idx` (`c_id`),
+  CONSTRAINT `c_id` FOREIGN KEY (`c_id`) REFERENCES `course` (`cid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `s_id` FOREIGN KEY (`s_id`) REFERENCES `student` (`sid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+
+6) Table name: "exercise" --- Exercise i.e. Homework is related to various topics and questions,has incorrect and correct points,starting and ending dates,number of attempts and the grading scheme.
+
+
+
+CREATE TABLE `exercise` (
+  `eid` varchar(255) NOT NULL,
+  `ename` varchar(255) DEFAULT NULL,
+  `due_date` date NOT NULL,
+  `correct_points` int(11) DEFAULT NULL,
+  `incorrect_points` int(11) DEFAULT NULL,
+  `start_date` date NOT NULL,
+  `grading_scheme` varchar(255) DEFAULT 'MAX',
+  `no_of_attempts` int(11) DEFAULT '2',
+  PRIMARY KEY (`eid`)
+) 
+
+
+
+7) Table name: "question" --- This table is a pool of questions with their levels and associations with various topics (sections).
+
+
+
+CREATE TABLE `question` (
+  `qid` varchar(255) NOT NULL,
+  `topicid` varchar(255) NOT NULL DEFAULT '',
+  `question` varchar(255) DEFAULT NULL,
+  `qlevel` int(11) DEFAULT '3',
+  PRIMARY KEY (`qid`,`topicid`),
+  KEY `tid_idx` (`topicid`),
+  CONSTRAINT `topicid` FOREIGN KEY (`topicid`) REFERENCES `topic` (`tid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+8) Table name: "answer" --- This is a pool of answers i.e. alternatives to every question.We have a default mapping of 8 alternatives to each question and exactly 2 right ones.
+
+
+
+CREATE TABLE `answer` (
+  `ansid` varchar(255) NOT NULL,
+  `answer` varchar(255) DEFAULT NULL,
+  `qid` varchar(255) NOT NULL DEFAULT '',
+  `correct_flag` varchar(3) DEFAULT NULL,
+  PRIMARY KEY (`ansid`,`qid`),
+  KEY `qid_idx` (`qid`),
+  CONSTRAINT `qid` FOREIGN KEY (`qid`) REFERENCES `question` (`qid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+9) Table name: "hint" --- This is a collection of hints.
+
+
+
+CREATE TABLE `hint` (
+  `hid` varchar(255) NOT NULL,
+  `hint` varchar(255) NOT NULL DEFAULT 'By definition.',
+  PRIMARY KEY (`hid`)
+) 
+
+
+10) Table name: "explanation" --- This is a collection of explanations.
+
+
+
+CREATE TABLE `explanation` (
+  `expid` varchar(255) NOT NULL,
+  `explanation` varchar(255) DEFAULT 'By definition',
+  PRIMARY KEY (`expid`)
+) 
+
+
+11) Table name: "topic" --- A collection of various topics.
+
+
+
+CREATE TABLE `topic` (
+  `tid` varchar(255) NOT NULL,
+  `tname` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`tid`)
+) 
+
+
+12) Table name: "student_solves_exercise" --- This is a relation which stores the exercise and attempt combination alongwith score for each student whenever the student attempts the exercise.The fina lscore is determined based on the grading scheme.
+
+
+
+CREATE TABLE `student_solves_exercise` (
+  `exerciseid` varchar(255) NOT NULL,
+  `studentid` varchar(255) NOT NULL,
+  `attemptno` int(11) DEFAULT '1',
+  `score` double DEFAULT '0',
+  `attempted` int(1) DEFAULT '0',
+  `final_score` double DEFAULT '0',
+  KEY `ex_id_idx` (`exerciseid`),
+  KEY `s_id_idx` (`studentid`),
+  CONSTRAINT `exerciseid` FOREIGN KEY (`exerciseid`) REFERENCES `exercise` (`eid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `studentid` FOREIGN KEY (`studentid`) REFERENCES `student` (`sid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+13) Table name: "exercise_has_topic" --- A relation expressing the association between exercise and various topics that it includes.
+
+
+
+CREATE TABLE `exercise_has_topic` (
+  `e_id` varchar(255) NOT NULL,
+  `t_id` varchar(255) NOT NULL,
+  KEY `eid_idx` (`e_id`),
+  KEY `tid_idx` (`t_id`)
+) 
+
+
+14) Table name: "exercise_has_question" --- A relation showing the list of questions that are included in an exercise.
+
+
+
+CREATE TABLE `exercise_has_question` (
+  `exid` varchar(255) NOT NULL,
+  `questionid` varchar(255) NOT NULL,
+  KEY `eid_idx` (`exid`),
+  KEY `questionid_idx` (`questionid`),
+  CONSTRAINT `exid` FOREIGN KEY (`exid`) REFERENCES `exercise` (`eid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `questionid` FOREIGN KEY (`questionid`) REFERENCES `question` (`qid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+15) Table name: "course_has_topic" --- A relation showing which all topics are present in a given course.
+
+
+
+CREATE TABLE `course_has_topic` (
+  `cid` varchar(255) NOT NULL,
+  `tid` varchar(255) NOT NULL,
+  PRIMARY KEY (`cid`,`tid`),
+  KEY `cid_idx` (`cid`),
+  KEY `tid_idx` (`tid`),
+  CONSTRAINT `cid` FOREIGN KEY (`cid`) REFERENCES `course` (`cid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tid` FOREIGN KEY (`tid`) REFERENCES `topic` (`tid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+)
+
+
+16) Table name: "answer_has_explanation" --- An association between correct answers and their explanations respectively.
+
+
+
+CREATE TABLE `ans_has_explanation` (
+  `answerid` varchar(255) NOT NULL,
+  `explanationid` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`answerid`),
+  KEY `ansid_idx` (`answerid`),
+  KEY `expid_idx` (`explanationid`),
+  CONSTRAINT `answerid` FOREIGN KEY (`answerid`) REFERENCES `answer` (`ansid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `explanationid` FOREIGN KEY (`explanationid`) REFERENCES `explanation` (`expid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+17) Table name: "answer_has_hint" --- An association between wrong answers and their hints respectively.
+
+
+
+CREATE TABLE `ans_has_hint` (
+  `ansid` varchar(255) NOT NULL,
+  `hid` varchar(255) NOT NULL,
+  PRIMARY KEY (`ansid`,`hid`),
+  KEY `ansid_idx` (`ansid`),
+  KEY `hid_idx` (`hid`),
+  CONSTRAINT `ansid` FOREIGN KEY (`ansid`) REFERENCES `answer` (`ansid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `hid` FOREIGN KEY (`hid`) REFERENCES `hint` (`hid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) 
+
+
+

@@ -1,0 +1,279 @@
+CREATE TABLE STATEMENTS:
+THE ENVIRONMENT USED FOR DATABASE MANAGEMENT IS ORACLE MYSQL 5.2.46
+
+
+
+1)Table name: "student"  ----This table stores all the students alongwith their id's,names and respective passwords.
+
+INSERT INTO `dbfinal`.`student`
+(`sid`,
+`spassword`,
+`sname`)
+VALUES
+(
+<{sid: }>,
+<{spassword: }>,
+<{sname: }>
+);
+
+
+
+2) Table name: "faculty" --- This table stores all the faculty with their id's,names and respective passwords
+
+ INSERT INTO `dbfinal`.`faculty`
+(`fid`,
+`fpassword`,
+`fname`)
+VALUES
+(
+<{fid: }>,
+<{fpassword: }>,
+<{fname: }>
+);
+
+
+3) Table name: "storage" --- This table stores the attempts of each student for each question,the answer that the student gave a,score for that question and also the correct answer to the question.
+
+INSERT INTO `dbfinal`.`storage`
+(`stud_id`,
+`ex_id`,
+`attempt_no`,
+`q_id`,
+`answer`,
+`score`,
+`right_answer`)
+VALUES
+(
+<{stud_id: }>,
+<{ex_id: }>,
+<{attempt_no: 1}>,
+<{q_id: }>,
+<{answer: }>,
+<{score: 0}>,
+<{right_answer: }>
+);
+
+
+
+4) Table name: "course" --- This table stores the list of courses,their token numbers,start and end dates,faculty id's and the TA information.
+
+INSERT INTO `dbfinal`.`course`
+(`cid`,
+`token`,
+`cname`,
+`cstart`,
+`cend`,
+`fid`,
+`taname`)
+VALUES
+(
+<{cid: }>,
+<{token: }>,
+<{cname: }>,
+<{cstart: }>,
+<{cend: }>,
+<{fid: }>,
+<{taname: }>
+);
+
+
+
+5) Table name: "enroll" --- Enroll captures the student and course relationship.
+
+INSERT INTO `dbfinal`.`enroll`
+(`s_id`,
+`c_id`)
+VALUES
+(
+<{s_id: }>,
+<{c_id: }>
+);
+
+
+
+6) Table name: "exercise" --- Exercise i.e. Homework is related to various topics and questions,has incorrect and correct points,starting and ending dates,number of attempts and the grading scheme.
+
+INSERT INTO `dbfinal`.`exercise`
+(`eid`,
+`ename`,
+`due_date`,
+`correct_points`,
+`incorrect_points`,
+`start_date`,
+`grading_scheme`,
+`no_of_attempts`)
+VALUES
+(
+<{eid: }>,
+<{ename: }>,
+<{due_date: }>,
+<{correct_points: }>,
+<{incorrect_points: }>,
+<{start_date: }>,
+<{grading_scheme: MAX}>,
+<{no_of_attempts: 2}>
+);
+
+
+
+
+7) Table name: "question" --- This table is a pool of questions with their levels and associations with various topics (sections).
+
+INSERT INTO `dbfinal`.`question`
+(`qid`,
+`topicid`,
+`question`,
+`qlevel`)
+VALUES
+(
+<{qid: }>,
+<{topicid: }>,
+<{question: }>,
+<{qlevel: 3}>
+);
+
+
+
+8) Table name: "answer" --- This is a pool of answers i.e. alternatives to every question.We have a default mapping of 8 alternatives to each question and exactly 2 right ones.
+
+delimiter $$
+
+INSERT INTO `dbfinal`.`answer`
+(`ansid`,
+`answer`,
+`qid`,
+`correct_flag`)
+VALUES
+(
+<{ansid: }>,
+<{answer: }>,
+<{qid: }>,
+<{correct_flag: }>
+);
+
+
+
+9) Table name: "hint" --- This is a collection of hints.
+
+INSERT INTO `dbfinal`.`hint`
+(`hid`,
+`hint`)
+VALUES
+(
+<{hid: }>,
+<{hint: By definition.}>
+);
+
+
+10) Table name: "explanation" --- This is a collection of explanations.
+
+INSERT INTO `dbfinal`.`explanation`
+(`expid`,
+`explanation`)
+VALUES
+(
+<{expid: }>,
+<{explanation: By definition}>
+);
+
+
+
+11) Table name: "topic" --- A collection of various topics.
+
+INSERT INTO `dbfinal`.`topic`
+(`tid`,
+`tname`)
+VALUES
+(
+<{tid: }>,
+<{tname: }>
+);
+
+
+
+12) Table name: "student_solves_exercise" --- This is a relation which stores the exercise and attempt combination alongwith score for each student whenever the student attempts the exercise.The fina lscore is determined based on the grading scheme.
+
+INSERT INTO `dbfinal`.`student_solves_exercise`
+(`exerciseid`,
+`studentid`,
+`attemptno`,
+`score`,
+`attempted`,
+`final_score`)
+VALUES
+(
+<{exerciseid: }>,
+<{studentid: }>,
+<{attemptno: 1}>,
+<{score: 0}>,
+<{attempted: 0}>,
+<{final_score: 0}>
+);
+
+
+
+13) Table name: "exercise_has_topic" --- A relation expressing the association between exercise and various topics that it includes.
+
+INSERT INTO `dbfinal`.`exercise_has_topic`
+(`e_id`,
+`t_id`)
+VALUES
+(
+<{e_id: }>,
+<{t_id: }>
+);
+
+
+
+14) Table name: "exercise_has_question" --- A relation showing the list of questions that are included in an exercise.
+
+INSERT INTO `dbfinal`.`exercise_has_question`
+(`exid`,
+`questionid`)
+VALUES
+(
+<{exid: }>,
+<{questionid: }>
+);
+
+
+
+15) Table name: "course_has_topic" --- A relation showing which all topics are present in a given course.
+
+INSERT INTO `dbfinal`.`course_has_topic`
+(`cid`,
+`tid`)
+VALUES
+(
+<{cid: }>,
+<{tid: }>
+);
+
+
+
+16) Table name: "answer_has_explanation" --- An association between correct answers and their explanations respectively.
+
+INSERT INTO `dbfinal`.`ans_has_explanation`
+(`answerid`,
+`explanationid`)
+VALUES
+(
+<{answerid: }>,
+<{explanationid: }>
+);
+
+
+
+17) Table name: "answer_has_hint" --- An association between wrong answers and their hints respectively.
+
+INSERT INTO `dbfinal`.`ans_has_hint`
+(`ansid`,
+`hid`)
+VALUES
+(
+<{ansid: }>,
+<{hid: }>
+);
+
+
+
